@@ -48,7 +48,6 @@ services:
   nacos:
     image: nacos/nacos-server:v2.3.2
     container_name: nacos
-    network_mode: "host"
     env_file:
       - ${PWD}/nacos/env/nacos-standlone-mysql.env
     volumes:
