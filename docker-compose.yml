@@ -32,7 +32,7 @@ services:
       timeout: 10s
       retries: 10
     networks:
-      my-network:
+      mid-network:
         ipv4_address: 172.20.0.2
 
   # MinIO
@@ -55,7 +55,7 @@ services:
       retries: 3
     restart: unless-stopped
     networks:
-      my-network:
+      mid-network:
         ipv4_address: 172.20.0.3
 
   # Nacos
@@ -74,7 +74,7 @@ services:
       mysql:
         condition: service_healthy
     networks:
-      my-network:
+      mid-network:
         ipv4_address: 172.20.0.4
 
   # Redis
@@ -92,7 +92,7 @@ services:
     command:
       /bin/bash -c "redis-server /usr/local/etc/redis/redis.conf"
     networks:
-      my-network:
+      mid-network:
         ipv4_address: 172.20.0.5
 
   # Elasticsearch
@@ -113,7 +113,7 @@ services:
       - ${PWD}/es/plugins:/usr/share/elasticsearch/plugins
     restart: always
     networks:
-      my-network:
+      mid-network:
         ipv4_address: 172.20.0.6
 
   # XXL-JOB
@@ -128,7 +128,7 @@ services:
     depends_on:
       - mysql
     networks:
-      my-network:
+      mid-network:
         ipv4_address: 172.20.0.7
 
   # RocketMQ
@@ -141,7 +141,7 @@ services:
       - ${PWD}/rocketMQ/data/namesrv/logs:/home/rocketmq/logs
     command: sh mqnamesrv -n 172.16.0.104:9876
     networks:
-      my-network:
+      mid-network:
         ipv4_address: 172.20.0.8
 
   broker:
@@ -159,7 +159,7 @@ services:
     depends_on:
       - namesrv
     networks:
-      my-network:
+      mid-network:
         ipv4_address: 172.20.0.9
 
   rocketmq-dashboard:
@@ -174,7 +174,7 @@ services:
       - namesrv
       - broker
     networks:
-      my-network:
+      mid-network:
         ipv4_address: 172.20.0.10
 
   kibana:
@@ -188,7 +188,7 @@ services:
     depends_on:
       - es
     networks:
-      my-network:
+      mid-network:
         ipv4_address: 172.20.0.11
 
   seata-server:
@@ -207,7 +207,7 @@ services:
       - "8091:8091"
     restart: always
     networks:
-      my-network:
+      mid-network:
         ipv4_address: 172.20.0.12
 
   sentinel-dashboard:
@@ -219,7 +219,7 @@ services:
       - "8888:8888"
     restart: always
     networks:
-      my-network:
+      mid-network:
         ipv4_address: 172.20.0.13
 
   nginx:
@@ -231,5 +231,5 @@ services:
       - ./nginx.conf:/etc/nginx/nginx.conf
     restart: unless-stopped
     networks:
-      my-network:
+      mid-network:
         ipv4_address: 172.20.0.14
