@@ -79,41 +79,33 @@ services:
     command:
       /bin/bash -c "redis-server /usr/local/etc/redis/redis.conf"
 
-  # Elasticsearch
-#  es:
-#    container_name: es
-#    image: elasticsearch:8.13.0
-#    environment:
-#      - discovery.type=single-node
-#      - ELASTIC_PASSWORD=123456
-#      - TZ=Asia/Shanghai
-#    ports:
-#      - "9200:9200"
-#      - "9300:9300"
-#    mem_limit: 2g
-#    volumes:
-#      - ${PWD}/es/config/elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml
-#      - ${PWD}/es/data:/usr/share/elasticsearch/data
-#      - ${PWD}/es/plugins:/usr/share/elasticsearch/plugins
-#    restart: always
-#    networks:
-#      mid-network:
-#        ipv4_address: 172.20.0.6
+  es:
+    container_name: es
+    image: elasticsearch:8.13.0
+    environment:
+      - discovery.type=single-node
+      - ELASTIC_PASSWORD=123456
+      - TZ=Asia/Shanghai
+    ports:
+      - "9200:9200"
+      - "9300:9300"
+    mem_limit: 2g
+    volumes:
+      - ${PWD}/es/config/elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml
+      - ${PWD}/es/data:/usr/share/elasticsearch/data
+      - ${PWD}/es/plugins:/usr/share/elasticsearch/plugins
+    restart: always
 
-  # XXL-JOB
-#  xxljob:
-#    image: xuxueli/xxl-job-admin:2.4.1
-#    container_name: xxl-job
-#    volumes:
-#      - ${PWD}/xxl-job/config/application.properties:/application.properties
-#    ports:
-#      - "8881:8080"
-#    restart: always
-#    depends_on:
-#      - mysql
-#    networks:
-#      mid-network:
-#        ipv4_address: 172.20.0.7
+  xxljob:
+    image: xuxueli/xxl-job-admin:2.4.1
+    container_name: xxl-job
+    volumes:
+      - ${PWD}/xxl-job/config/application.properties:/application.properties
+    ports:
+      - "8881:8080"
+    restart: always
+    depends_on:
+      - mysql
 
   # RocketMQ
   namesrv:
@@ -153,21 +145,18 @@ services:
     restart: always
     depends_on:
       - namesrv
-      - broker0
+      - broker
 
-#  kibana:
-#    image: kibana:8.13.0
-#    container_name: kibana
-#    restart: always
-#    ports:
-#      - 5601:5601
-#    volumes:
-#      - ${PWD}/kibana/conf/kibana.yml:/usr/share/kibana/config/kibana.yml
-#    depends_on:
-#      - es
-#    networks:
-#      mid-network:
-#        ipv4_address: 172.20.0.11
+  kibana:
+    image: kibana:8.13.0
+    container_name: kibana
+    restart: always
+    ports:
+      - 5601:5601
+    volumes:
+      - ${PWD}/kibana/conf/kibana.yml:/usr/share/kibana/config/kibana.yml
+    depends_on:
+      - es
 
   seata-server:
     image: seataio/seata-server:2.0.0
