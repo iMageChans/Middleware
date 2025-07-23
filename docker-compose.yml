@@ -123,7 +123,7 @@ services:
     volumes:
       - ${PWD}/xxl-job/config/application.properties:/application.properties
     ports:
-      - "8081:8080"
+      - "8881:8080"
     restart: always
     depends_on:
       - mysql
