@@ -1,15 +1,8 @@
-networks:
-  mid-network:
-    driver: bridge
-    ipam:
-      config:
-        - subnet: 172.20.0.0/16
-
-
 services:
   mysql:
     image: mysql:8.4.1
     container_name: mysql
+    network_mode: "host"
     ports:
       - "3306:3306"
     environment:
@@ -31,14 +24,12 @@ services:
       interval: 5s
       timeout: 10s
       retries: 10
-    networks:
-      mid-network:
-        ipv4_address: 172.20.0.2
 
   # MinIO
   minio:
     image: minio/minio
     container_name: minio
+    network_mode: "host"
     ports:
       - "9000:9000"
       - "9001:9001"
@@ -54,14 +45,12 @@ services:
       timeout: 20s
       retries: 3
     restart: unless-stopped
-    networks:
-      mid-network:
-        ipv4_address: 172.20.0.3
 
   # Nacos
   nacos:
     image: nacos/nacos-server:v2.3.2
     container_name: nacos
+    network_mode: "host"
     env_file:
       - ${PWD}/nacos/env/nacos-standlone-mysql.env
     volumes:
@@ -73,14 +62,12 @@ services:
     depends_on:
       mysql:
         condition: service_healthy
-    networks:
-      mid-network:
-        ipv4_address: 172.20.0.4
 
   # Redis
   redis:
     image: redis:latest
     container_name: redis
+    network_mode: "host"
     restart: always
     ports:
       - 6379:6379
@@ -91,62 +78,58 @@ services:
       - ${PWD}/redis/data:/data:rw
     command:
       /bin/bash -c "redis-server /usr/local/etc/redis/redis.conf"
-    networks:
-      mid-network:
-        ipv4_address: 172.20.0.5
 
   # Elasticsearch
-  es:
-    container_name: es
-    image: elasticsearch:8.13.0
-    environment:
-      - discovery.type=single-node
-      - ELASTIC_PASSWORD=123456
-      - TZ=Asia/Shanghai
-    ports:
-      - "9200:9200"
-      - "9300:9300"
-    mem_limit: 2g
-    volumes:
-      - ${PWD}/es/config/elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml
-      - ${PWD}/es/data:/usr/share/elasticsearch/data
-      - ${PWD}/es/plugins:/usr/share/elasticsearch/plugins
-    restart: always
-    networks:
-      mid-network:
-        ipv4_address: 172.20.0.6
+#  es:
+#    container_name: es
+#    image: elasticsearch:8.13.0
+#    environment:
+#      - discovery.type=single-node
+#      - ELASTIC_PASSWORD=123456
+#      - TZ=Asia/Shanghai
+#    ports:
+#      - "9200:9200"
+#      - "9300:9300"
+#    mem_limit: 2g
+#    volumes:
+#      - ${PWD}/es/config/elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml
+#      - ${PWD}/es/data:/usr/share/elasticsearch/data
+#      - ${PWD}/es/plugins:/usr/share/elasticsearch/plugins
+#    restart: always
+#    networks:
+#      mid-network:
+#        ipv4_address: 172.20.0.6
 
   # XXL-JOB
-  xxljob:
-    image: xuxueli/xxl-job-admin:2.4.1
-    container_name: xxl-job
-    volumes:
-      - ${PWD}/xxl-job/config/application.properties:/application.properties
-    ports:
-      - "8881:8080"
-    restart: always
-    depends_on:
-      - mysql
-    networks:
-      mid-network:
-        ipv4_address: 172.20.0.7
+#  xxljob:
+#    image: xuxueli/xxl-job-admin:2.4.1
+#    container_name: xxl-job
+#    volumes:
+#      - ${PWD}/xxl-job/config/application.properties:/application.properties
+#    ports:
+#      - "8881:8080"
+#    restart: always
+#    depends_on:
+#      - mysql
+#    networks:
+#      mid-network:
+#        ipv4_address: 172.20.0.7
 
   # RocketMQ
   namesrv:
     image: apache/rocketmq:5.2.0
     container_name: rmqnamesrv
+    network_mode: "host"
     ports:
       - 9876:9876
     volumes:
       - ${PWD}/rocketMQ/data/namesrv/logs:/home/rocketmq/logs
     command: sh mqnamesrv -n 172.16.0.104:9876
-    networks:
-      mid-network:
-        ipv4_address: 172.20.0.8
 
   broker:
     image: apache/rocketmq:5.2.0
     container_name: rmqbroker
+    network_mode: "host"
     ports:
       - 10909:10909
       - 10911:10911
@@ -158,13 +141,11 @@ services:
     command: sh mqbroker -n 172.16.0.104:9876  -c /home/rocketmq/rocketmq-5.2.0/conf/broker.conf autoCreateTopicEnable=true
     depends_on:
       - namesrv
-    networks:
-      mid-network:
-        ipv4_address: 172.20.0.9
 
   rocketmq-dashboard:
     image: apacherocketmq/rocketmq-dashboard:latest
     container_name: rocketmq-dashboard
+    network_mode: "host"
     environment:
       - JAVA_OPTS=-Drocketmq.namesrv.addr=172.16.0.104:9876
     ports:
@@ -172,28 +153,26 @@ services:
     restart: always
     depends_on:
       - namesrv
-      - broker
-    networks:
-      mid-network:
-        ipv4_address: 172.20.0.10
+      - broker0
 
-  kibana:
-    image: kibana:8.13.0
-    container_name: kibana
-    restart: always
-    ports:
-      - 5601:5601
-    volumes:
-      - ${PWD}/kibana/conf/kibana.yml:/usr/share/kibana/config/kibana.yml
-    depends_on:
-      - es
-    networks:
-      mid-network:
-        ipv4_address: 172.20.0.11
+#  kibana:
+#    image: kibana:8.13.0
+#    container_name: kibana
+#    restart: always
+#    ports:
+#      - 5601:5601
+#    volumes:
+#      - ${PWD}/kibana/conf/kibana.yml:/usr/share/kibana/config/kibana.yml
+#    depends_on:
+#      - es
+#    networks:
+#      mid-network:
+#        ipv4_address: 172.20.0.11
 
   seata-server:
     image: seataio/seata-server:2.0.0
     container_name: seata-server
+    network_mode: "host"
     environment:
       - STORE_MODE=db
       - SEATA_IP=172.16.0.104
@@ -206,21 +185,16 @@ services:
       - "7091:7091"
       - "8091:8091"
     restart: always
-    networks:
-      mid-network:
-        ipv4_address: 172.20.0.12
 
   sentinel-dashboard:
     image: javajianghu/sentinel-dashboard:v1.8.8
     container_name: sentinel-dashboard
+    network_mode: "host"
     environment:
       - dashboard.server=172.16.0.104:8888
     ports:
       - "8888:8888"
     restart: always
-    networks:
-      mid-network:
-        ipv4_address: 172.20.0.13
 
   nginx:
     image: nginx:latest
