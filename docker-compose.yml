@@ -2,7 +2,6 @@ services:
   mysql:
     image: mysql:8.4.1
     container_name: mysql
-    network_mode: "host"
     ports:
       - "3306:3306"
     environment:
@@ -29,7 +28,6 @@ services:
   minio:
     image: minio/minio
     container_name: minio
-    network_mode: "host"
     ports:
       - "9000:9000"
       - "9001:9001"
@@ -67,7 +65,6 @@ services:
   redis:
     image: redis:latest
     container_name: redis
-    network_mode: "host"
     restart: always
     ports:
       - 6379:6379
@@ -111,7 +108,6 @@ services:
   namesrv:
     image: apache/rocketmq:5.2.0
     container_name: rmqnamesrv
-    network_mode: "host"
     ports:
       - 9876:9876
     volumes:
@@ -121,7 +117,6 @@ services:
   broker:
     image: apache/rocketmq:5.2.0
     container_name: rmqbroker
-    network_mode: "host"
     ports:
       - 10909:10909
       - 10911:10911
@@ -137,7 +132,6 @@ services:
   rocketmq-dashboard:
     image: apacherocketmq/rocketmq-dashboard:latest
     container_name: rocketmq-dashboard
-    network_mode: "host"
     environment:
       - JAVA_OPTS=-Drocketmq.namesrv.addr=172.16.0.104:9876
     ports:
@@ -161,7 +155,6 @@ services:
   seata-server:
     image: seataio/seata-server:2.0.0
     container_name: seata-server
-    network_mode: "host"
     environment:
       - STORE_MODE=db
       - SEATA_IP=172.16.0.104
@@ -178,7 +171,6 @@ services:
   sentinel-dashboard:
     image: javajianghu/sentinel-dashboard:v1.8.8
     container_name: sentinel-dashboard
-    network_mode: "host"
     environment:
       - dashboard.server=172.16.0.104:8888
     ports:
