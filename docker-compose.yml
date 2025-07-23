@@ -225,6 +225,8 @@ services:
   nginx:
     image: nginx:latest
     container_name: nginx-proxy
+    extra_hosts:
+      - "host.docker.internal:172.20.0.1"
     ports:
       - "80:80"
     volumes:
