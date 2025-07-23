@@ -1,5 +1,12 @@
+networks:
+  mid-network:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.20.0.0/16
+
+
 services:
-  # MySQL
   mysql:
     image: mysql:8.4.1
     container_name: mysql
@@ -24,6 +31,9 @@ services:
       interval: 5s
       timeout: 10s
       retries: 10
+    networks:
+      my-network:
+        ipv4_address: 172.20.0.2
 
   # MinIO
   minio:
@@ -44,6 +54,9 @@ services:
       timeout: 20s
       retries: 3
     restart: unless-stopped
+    networks:
+      my-network:
+        ipv4_address: 172.20.0.3
 
   # Nacos
   nacos:
@@ -60,6 +73,9 @@ services:
     depends_on:
       mysql:
         condition: service_healthy
+    networks:
+      my-network:
+        ipv4_address: 172.20.0.4
 
   # Redis
   redis:
@@ -75,6 +91,9 @@ services:
       - ${PWD}/redis/data:/data:rw
     command:
       /bin/bash -c "redis-server /usr/local/etc/redis/redis.conf"
+    networks:
+      my-network:
+        ipv4_address: 172.20.0.5
 
   # Elasticsearch
   es:
@@ -93,6 +112,9 @@ services:
       - ${PWD}/es/data:/usr/share/elasticsearch/data
       - ${PWD}/es/plugins:/usr/share/elasticsearch/plugins
     restart: always
+    networks:
+      my-network:
+        ipv4_address: 172.20.0.6
 
   # XXL-JOB
   xxljob:
@@ -105,6 +127,9 @@ services:
     restart: always
     depends_on:
       - mysql
+    networks:
+      my-network:
+        ipv4_address: 172.20.0.7
 
   # RocketMQ
   namesrv:
@@ -115,6 +140,9 @@ services:
     volumes:
       - ${PWD}/rocketMQ/data/namesrv/logs:/home/rocketmq/logs
     command: sh mqnamesrv -n 172.16.0.104:9876
+    networks:
+      my-network:
+        ipv4_address: 172.20.0.8
 
   broker:
     image: apache/rocketmq:5.2.0
@@ -130,6 +158,9 @@ services:
     command: sh mqbroker -n 172.16.0.104:9876  -c /home/rocketmq/rocketmq-5.2.0/conf/broker.conf autoCreateTopicEnable=true
     depends_on:
       - namesrv
+    networks:
+      my-network:
+        ipv4_address: 172.20.0.9
 
   rocketmq-dashboard:
     image: apacherocketmq/rocketmq-dashboard:latest
@@ -142,6 +173,9 @@ services:
     depends_on:
       - namesrv
       - broker
+    networks:
+      my-network:
+        ipv4_address: 172.20.0.10
 
   kibana:
     image: kibana:8.13.0
@@ -153,6 +187,10 @@ services:
       - ${PWD}/kibana/conf/kibana.yml:/usr/share/kibana/config/kibana.yml
     depends_on:
       - es
+    networks:
+      my-network:
+        ipv4_address: 172.20.0.11
+
   seata-server:
     image: seataio/seata-server:2.0.0
     container_name: seata-server
@@ -168,6 +206,10 @@ services:
       - "7091:7091"
       - "8091:8091"
     restart: always
+    networks:
+      my-network:
+        ipv4_address: 172.20.0.12
+
   sentinel-dashboard:
     image: javajianghu/sentinel-dashboard:v1.8.8
     container_name: sentinel-dashboard
@@ -176,6 +218,9 @@ services:
     ports:
       - "8888:8888"
     restart: always
+    networks:
+      my-network:
+        ipv4_address: 172.20.0.13
 
   nginx:
     image: nginx:latest
@@ -185,3 +230,6 @@ services:
     volumes:
       - ./nginx.conf:/etc/nginx/nginx.conf
     restart: unless-stopped
+    networks:
+      my-network:
+        ipv4_address: 172.20.0.14
