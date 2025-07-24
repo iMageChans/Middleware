@@ -75,33 +75,33 @@ services:
     command:
       /bin/bash -c "redis-server /usr/local/etc/redis/redis.conf"
 
-#  es:
-#    container_name: es
-#    image: elasticsearch:8.13.0
-#    environment:
-#      - discovery.type=single-node
-#      - ELASTIC_PASSWORD=123456
-#      - TZ=Asia/Shanghai
-#    ports:
-#      - "9200:9200"
-#      - "9300:9300"
-#    mem_limit: 2g
-#    volumes:
-#      - ${PWD}/es/config/elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml
-#      - ${PWD}/es/data:/usr/share/elasticsearch/data
-#      - ${PWD}/es/plugins:/usr/share/elasticsearch/plugins
-#    restart: always
-#
-#  xxljob:
-#    image: xuxueli/xxl-job-admin:2.4.1
-#    container_name: xxl-job
-#    volumes:
-#      - ${PWD}/xxl-job/config/application.properties:/application.properties
-#    ports:
-#      - "8881:8080"
-#    restart: always
-#    depends_on:
-#      - mysql
+  es:
+    container_name: es
+    image: elasticsearch:8.13.0
+    environment:
+      - discovery.type=single-node
+      - ELASTIC_PASSWORD=123456
+      - TZ=Asia/Shanghai
+    ports:
+      - "9200:9200"
+      - "9300:9300"
+    mem_limit: 2g
+    volumes:
+      - ${PWD}/es/config/elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml
+      - ${PWD}/es/data:/usr/share/elasticsearch/data
+      - ${PWD}/es/plugins:/usr/share/elasticsearch/plugins
+    restart: always
+
+  xxljob:
+    image: xuxueli/xxl-job-admin:2.4.1
+    container_name: xxl-job
+    volumes:
+      - ${PWD}/xxl-job/config/application.properties:/application.properties
+    ports:
+      - "8881:8080"
+    restart: always
+    depends_on:
+      - mysql
 
   # RocketMQ
 #  namesrv:
@@ -151,21 +151,21 @@ services:
 #    depends_on:
 #      - es
 
-#  seata-server:
-#    image: seataio/seata-server:2.0.0
-#    container_name: seata-server
-#    environment:
-#      - STORE_MODE=db
-#      - SEATA_IP=172.16.0.104
-#      - SEATA_PORT=8091
-#    volumes:
-#      - /etc/localtime:/etc/localtime:ro
-#      - ${PWD}/seata-server/resources/application.yml:/seata-server/resources/application.yml
-#      - ${PWD}/seata-server/logs:/seata-server/logs
-#    ports:
-#      - "7091:7091"
-#      - "8091:8091"
-#    restart: always
+  seata-server:
+    image: seataio/seata-server:2.0.0
+    container_name: seata-server
+    environment:
+      - STORE_MODE=db
+      - SEATA_IP=172.16.0.104
+      - SEATA_PORT=8091
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - ${PWD}/seata-server/resources/application.yml:/seata-server/resources/application.yml
+      - ${PWD}/seata-server/logs:/seata-server/logs
+    ports:
+      - "7091:7091"
+      - "8091:8091"
+    restart: always
 #
   sentinel-dashboard:
     image: javajianghu/sentinel-dashboard:v1.8.8
