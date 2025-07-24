@@ -92,16 +92,16 @@ services:
       - ${PWD}/es/plugins:/usr/share/elasticsearch/plugins
     restart: always
 
-  xxljob:
-    image: xuxueli/xxl-job-admin:2.4.1
-    container_name: xxl-job
-    volumes:
-      - ${PWD}/xxl-job/config/application.properties:/application.properties
-    ports:
-      - "8881:8080"
-    restart: always
-    depends_on:
-      - mysql
+#  xxljob:
+#    image: xuxueli/xxl-job-admin:2.4.1
+#    container_name: xxl-job
+#    volumes:
+#      - ${PWD}/xxl-job/config/application.properties:/application.properties
+#    ports:
+#      - "8881:8080"
+#    restart: always
+#    depends_on:
+#      - mysql
 
 #  # RocketMQ
 #  namesrv:
