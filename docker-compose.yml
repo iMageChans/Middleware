@@ -3,7 +3,7 @@ services:
     image: mysql:8.4.1
     container_name: mysql-8
     environment:
-      - MYSQL_ROOT_PASSWORD=123456
+      - MYSQL_ROOT_PASSWORD=AtuKy1PVVnuZswEUBaG1
       - TZ=Asia/Shanghai
       - SET_CONTAINER_TIMEZONE=true
       - CONTAINER_TIMEZONE=Asia/Shanghai
